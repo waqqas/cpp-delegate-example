@@ -7,6 +7,6 @@ namespace delegator
     class ireceiver
     {
     public:
-        virtual void do_actual_work(sender *) = 0;
+        virtual void do_actual_work(const sender &) = 0;
     };
 }

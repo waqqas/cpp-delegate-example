@@ -7,9 +7,9 @@ namespace user_defined
 {
     class recevier : public delegator::ireceiver
     {
-        void do_actual_work(delegator::sender *sender) override
+        void do_actual_work(const delegator::sender &sender) override
         {
-            std::cout << "Doing actual work for sender: " << sender->id() << std::endl;
+            std::cout << "Doing actual work for sender: " << sender.id() << std::endl;
         }
     };
 }

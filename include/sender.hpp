@@ -2,8 +2,6 @@
 
 #include "ireceiver.hpp"
 
-#include <cstddef> // for nullptr
-#include <cassert> // for assert()
 #include <string>
 
 namespace delegator
@@ -11,20 +9,18 @@ namespace delegator
     class sender
     {
     private:
-        std::string _id;
+        const std::string _id;
+        ireceiver &_delegate;
 
     public:
-        ireceiver *delegate;
-
-        sender(const std::string &id) : _id(id) {}
+        sender(const std::string &id, ireceiver &delegate) : _id(id), _delegate(delegate) {}
 
         void do_work()
         {
-            assert(delegate != nullptr);
-            delegate->do_actual_work(this);
+            _delegate.do_actual_work(*this);
         }
 
-        std::string id()
+        std::string id() const
         {
             return _id;
         }
