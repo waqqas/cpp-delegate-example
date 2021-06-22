@@ -2,9 +2,11 @@
 
 namespace delegator
 {
+    class sender;
+
     class ireceiver
     {
     public:
-        virtual void do_actual_work(void) = 0;
+        virtual void do_actual_work(sender *) = 0;
     };
 }
