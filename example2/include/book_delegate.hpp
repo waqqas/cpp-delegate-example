@@ -2,23 +2,10 @@
 
 #include <cassert>
 #include <cstddef>
+#include <memory>
 
 namespace feed_handler
 {
-    class book;
-
-    class book_delegate
-    {
-    public:
-        virtual void on_book_updated(book *) = 0;
-    };
-
-    class event_delegate
-    {
-    public:
-        virtual void on_event_received(void) = 0;
-    };
-
     enum class packet_type
     {
         book_update,
@@ -30,23 +17,54 @@ namespace feed_handler
         packet_type type;
     };
 
-    class book
+    class book : public std::enable_shared_from_this<book>
     {
     public:
-        book_delegate *book_delegate;
-        event_delegate *event_delegate;
+        using pointer = std::shared_ptr<book>;
+
+        class book_delegate
+        {
+        public:
+            using pointer = std::shared_ptr<book_delegate>;
+
+            virtual void on_book_updated(book::pointer) = 0;
+
+            virtual ~book_delegate(){};
+        };
+
+        class event_delegate
+        {
+        public:
+            using pointer = std::shared_ptr<event_delegate>;
+
+            virtual void on_event_received(void) = 0;
+
+            virtual ~event_delegate(){};
+        };
+
+        book_delegate::pointer book_delegate;
+        event_delegate::pointer event_delegate;
+
+        static pointer make_pointer()
+        {
+            return std::make_shared<book>();
+        }
 
         void process_packet(const packet &pkt)
         {
             if (pkt.type == packet_type::book_update)
             {
-                assert(book_delegate != nullptr);
-                book_delegate->on_book_updated(this);
+                if (book_delegate != nullptr)
+                {
+                    book_delegate->on_book_updated(shared_from_this());
+                }
             }
             else if (pkt.type == packet_type::event)
             {
-                assert(event_delegate != nullptr);
-                event_delegate->on_event_received();
+                if (event_delegate != nullptr)
+                {
+                    event_delegate->on_event_received();
+                }
             }
         }
     };
