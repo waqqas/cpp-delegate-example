@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 {
   app::algorithms::algo1 algo;
 
-  feed_handler::book_ptr book1 = std::make_shared<feed_handler::book>();
+  feed_handler::book::pointer book1 = feed_handler::book::make_pointer();
   book1->book_delegate = &algo;
   book1->event_delegate = &algo;
 
