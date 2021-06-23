@@ -7,10 +7,12 @@ namespace feed_handler
 {
     class book;
 
+    using book_ptr = book *;
+
     class book_delegate
     {
     public:
-        virtual void on_book_updated(book *) = 0;
+        virtual void on_book_updated(book_ptr) = 0;
     };
 
     class event_delegate
