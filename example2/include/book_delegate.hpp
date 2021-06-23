@@ -25,17 +25,25 @@ namespace feed_handler
         class book_delegate
         {
         public:
+            using pointer = std::shared_ptr<book_delegate>;
+
             virtual void on_book_updated(book::pointer) = 0;
+
+            virtual ~book_delegate(){};
         };
 
         class event_delegate
         {
         public:
+            using pointer = std::shared_ptr<event_delegate>;
+
             virtual void on_event_received(void) = 0;
+
+            virtual ~event_delegate(){};
         };
 
-        book_delegate *book_delegate;
-        event_delegate *event_delegate;
+        book_delegate::pointer book_delegate;
+        event_delegate::pointer event_delegate;
 
         static pointer make_pointer()
         {
