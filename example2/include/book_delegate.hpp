@@ -2,12 +2,13 @@
 
 #include <cassert>
 #include <cstddef>
+#include <memory>
 
 namespace feed_handler
 {
     class book;
 
-    using book_ptr = book *;
+    using book_ptr = std::shared_ptr<book>;
 
     class book_delegate
     {
@@ -32,7 +33,7 @@ namespace feed_handler
         packet_type type;
     };
 
-    class book
+    class book : public std::enable_shared_from_this<book>
     {
     public:
         book_delegate *book_delegate;
@@ -43,7 +44,7 @@ namespace feed_handler
             if (pkt.type == packet_type::book_update)
             {
                 assert(book_delegate != nullptr);
-                book_delegate->on_book_updated(this);
+                book_delegate->on_book_updated(shared_from_this());
             }
             else if (pkt.type == packet_type::event)
             {
