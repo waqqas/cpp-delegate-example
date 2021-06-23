@@ -12,24 +12,27 @@ namespace feed_handler
         event
     };
 
+    template <packet_type T>
     struct packet
     {
-        packet_type type;
+        packet_type type = T;
     };
 
-    class book : public std::enable_shared_from_this<book>
+    template <typename T>
+    class book : public std::enable_shared_from_this<book<T>>
     {
     public:
-        using pointer = std::shared_ptr<book>;
+        using pointer = std::shared_ptr<book<T>>;
 
         class book_delegate
         {
         public:
             using pointer = std::shared_ptr<book_delegate>;
 
-            virtual void on_book_updated(book::pointer) = 0;
-
-            virtual ~book_delegate(){};
+            void on_book_updated(book<T>::pointer book)
+            {
+                static_cast<T *>(this)->on_book_updated(book);
+            }
         };
 
         class event_delegate
@@ -37,33 +40,36 @@ namespace feed_handler
         public:
             using pointer = std::shared_ptr<event_delegate>;
 
-            virtual void on_event_received(void) = 0;
-
-            virtual ~event_delegate(){};
+            void on_event_received(void)
+            {
+                static_cast<T *>(this)->on_event_received();
+            }
         };
 
-        book_delegate::pointer book_delegate;
-        event_delegate::pointer event_delegate;
+        typename book_delegate::pointer bookDelegate;
+        typename event_delegate::pointer eventDelegate;
 
         static pointer make_pointer()
         {
-            return std::make_shared<book>();
+            return std::make_shared<book<T>>();
         }
 
-        void process_packet(const packet &pkt)
+        template <packet_type PT>
+        void process_packet(const packet<PT> &pkt)
         {
-            if (pkt.type == packet_type::book_update)
+            if constexpr (PT == packet_type::book_update)
             {
-                if (book_delegate != nullptr)
+                if (bookDelegate != nullptr)
                 {
-                    book_delegate->on_book_updated(shared_from_this());
+                    bookDelegate->on_book_updated(std::enable_shared_from_this<book<T>>::shared_from_this());
                 }
             }
-            else if (pkt.type == packet_type::event)
+
+            if constexpr (PT == packet_type::event)
             {
-                if (event_delegate != nullptr)
+                if (eventDelegate != nullptr)
                 {
-                    event_delegate->on_event_received();
+                    eventDelegate->on_event_received();
                 }
             }
         }

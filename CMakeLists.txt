@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.19)
 
 project("delegate-examples" VERSION "1.0.0")
 
+##################################################
 # Compiler options.
 # C++ standard.
 set(CMAKE_C_STANDARD 11)
@@ -15,6 +16,7 @@ add_compile_options(-Wshadow -fvisibility=hidden -fvisibility-inlines-hidden -fP
 if(${CMAKE_BUILD_TYPE} MATCHES Release)
     add_compile_options(-fno-omit-frame-pointer -DNDEBUG -O3)
 endif()
+##################################################
 
 set(default_build_type "Release")
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
