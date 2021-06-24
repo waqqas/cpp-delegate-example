@@ -3,9 +3,12 @@
 #include <cassert>
 #include <cstddef>
 #include <memory>
+#include <boost/asio.hpp>
 
 namespace feed_handler
 {
+    using namespace boost::asio;
+
     enum class packet_type
     {
         book_update,
@@ -26,23 +29,35 @@ namespace feed_handler
 
         class book_delegate
         {
+        private:
+            io_context &_io;
+
         public:
             using pointer = std::shared_ptr<book_delegate>;
 
+            book_delegate(io_context &io) : _io(io) {}
+
             void on_book_updated(book<T>::pointer book)
             {
-                static_cast<T *>(this)->on_book_updated(book);
+                post(_io, [=]()
+                     { static_cast<T *>(this)->on_book_updated(book); });
             }
         };
 
         class event_delegate
         {
+        private:
+            io_context &_io;
+
         public:
             using pointer = std::shared_ptr<event_delegate>;
 
+            event_delegate(io_context &io) : _io(io) {}
+
             void on_event_received(void)
             {
-                static_cast<T *>(this)->on_event_received();
+                post(_io, [=]()
+                     { static_cast<T *>(this)->on_event_received(); });
             }
         };
 
