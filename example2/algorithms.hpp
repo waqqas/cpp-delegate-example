@@ -3,6 +3,7 @@
 #include "book_delegate.hpp"
 #include <cstdint>
 #include <iostream>
+#include <mutex>
 
 namespace app
 {
@@ -15,6 +16,7 @@ namespace app
         private:
             uint32_t _book_update_count = {0};
             uint32_t _event_count = {0};
+            std::mutex _mutex;
 
         public:
             using pointer = std::shared_ptr<algo1>;
@@ -26,20 +28,20 @@ namespace app
 
             void on_book_updated(book<algo1>::pointer book)
             {
+                std::lock_guard<std::mutex> lock(_mutex);
                 _book_update_count++;
-                // std::cout << "book update count: " << _book_update_count << std::endl;
             }
 
             void on_event_received()
             {
+                std::lock_guard<std::mutex> lock(_mutex);
                 _event_count++;
-                // std::cout << "event count: " << _event_count << std::endl;
             }
 
             void print_stats()
             {
-                std::cout << "book update count: " << _book_update_count << std::endl;
-                std::cout << "event count: " << _event_count << std::endl;
+                std::cout << "book update count : " << _book_update_count << std::endl;
+                std::cout << "event count       : " << _event_count << std::endl;
             }
         };
     }
