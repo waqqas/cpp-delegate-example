@@ -9,3 +9,6 @@ find_package(Boost 1.75 REQUIRED system)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
 target_link_directories(${PROJECT_NAME} PUBLIC ${Boost_LIBRARY_DIRS})
 target_link_libraries(${PROJECT_NAME} Boost::system)
+
+find_package(Threads REQUIRED)
+target_link_libraries(${PROJECT_NAME} Threads::Threads)
