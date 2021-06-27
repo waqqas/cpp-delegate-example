@@ -1,11 +1,12 @@
 #pragma once
 
 #include "book.hpp"
+#include "book2.hpp"
 
 #include <boost/asio.hpp>
 #include <cstdint>
 #include <iostream>
-// #include <mutex>
+#include <mutex>
 
 namespace app
 {
@@ -33,6 +34,35 @@ namespace app
             }
 
             void on_event_received()
+            {
+                // std::lock_guard<std::mutex> lock(_mutex);
+                _event_count++;
+            }
+
+            void print_stats()
+            {
+                std::cout << "book update count : " << _book_update_count << std::endl;
+                std::cout << "event count       : " << _event_count << std::endl;
+            }
+        };
+
+        class algo2 : public book2::book_delegate, public book2::event_delegate
+        {
+        private:
+            uint32_t _book_update_count = {0};
+            uint32_t _event_count = {0};
+            // std::mutex _mutex;
+
+        public:
+            using pointer = std::shared_ptr<algo2>;
+
+            void on_book_updated(book2::pointer book) override
+            {
+                // std::lock_guard<std::mutex> lock(_mutex);
+                _book_update_count++;
+            }
+
+            void on_event_received() override
             {
                 // std::lock_guard<std::mutex> lock(_mutex);
                 _event_count++;

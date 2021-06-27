@@ -4,7 +4,7 @@
 #include <thread>
 #include <memory>
 
-static void algo_bm(benchmark::State &state)
+static void algo1_bm(benchmark::State &state)
 {
     using current_algo = app::algorithms::algo1;
     using namespace boost::asio;
@@ -37,4 +37,30 @@ static void algo_bm(benchmark::State &state)
     algo->print_stats();
 }
 
-BENCHMARK(algo_bm);
+static void algo2_bm(benchmark::State &state)
+{
+    using current_algo = app::algorithms::algo2;
+
+    current_algo::pointer algo = std::make_shared<current_algo>();
+
+    feed_handler::book2::pointer book = feed_handler::book2::make_pointer();
+    book->bookDelegate = algo;
+    book->eventDelegate = algo;
+
+    std::thread th(
+        [&]()
+        {
+            feed_handler::packet2 pkt1{feed_handler::packet_type::book_update};
+            for (auto _ : state)
+            {
+                book->process_packet(pkt1);
+            }
+        });
+
+    th.join();
+
+    algo->print_stats();
+}
+
+BENCHMARK(algo1_bm);
+BENCHMARK(algo2_bm);

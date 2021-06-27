@@ -14,4 +14,9 @@ namespace feed_handler
         packet_type type = T;
     };
 
+    struct packet2
+    {
+        packet_type type;
+    };
+
 }

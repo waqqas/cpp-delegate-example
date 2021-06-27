@@ -26,7 +26,7 @@ namespace feed_handler
 
             book_delegate(io_context &io) : _io(io) {}
 
-            void on_book_updated(book<T>::pointer book)
+            inline void on_book_updated(book<T>::pointer book)
             {
                 static_cast<T *>(this)->on_book_updated(book);
                 // post(_io, [=]()
@@ -44,7 +44,7 @@ namespace feed_handler
 
             event_delegate(io_context &io) : _io(io) {}
 
-            void on_event_received(void)
+            inline void on_event_received(void)
             {
                 static_cast<T *>(this)->on_event_received();
                 // post(_io, [=]()
