@@ -1,6 +1,6 @@
 #pragma once
 
-#include "book_delegate.hpp"
+#include "book.hpp"
 
 #include <boost/asio.hpp>
 #include <cstdint>

@@ -1,6 +1,7 @@
 #pragma once
 
-#include <cassert>
+#include "packet.hpp"
+
 #include <cstddef>
 #include <memory>
 #include <boost/asio.hpp>
@@ -8,18 +9,6 @@
 namespace feed_handler
 {
     using namespace boost::asio;
-
-    enum class packet_type
-    {
-        book_update,
-        event
-    };
-
-    template <packet_type T>
-    struct packet
-    {
-        packet_type type = T;
-    };
 
     template <typename T>
     class book : public std::enable_shared_from_this<book<T>>
@@ -39,8 +28,9 @@ namespace feed_handler
 
             void on_book_updated(book<T>::pointer book)
             {
-                post(_io, [=]()
-                     { static_cast<T *>(this)->on_book_updated(book); });
+                static_cast<T *>(this)->on_book_updated(book);
+                // post(_io, [=]()
+                //      { static_cast<T *>(this)->on_book_updated(book); });
             }
         };
 
@@ -56,8 +46,9 @@ namespace feed_handler
 
             void on_event_received(void)
             {
-                post(_io, [=]()
-                     { static_cast<T *>(this)->on_event_received(); });
+                static_cast<T *>(this)->on_event_received();
+                // post(_io, [=]()
+                //      { static_cast<T *>(this)->on_event_received(); });
             }
         };
 
@@ -75,17 +66,12 @@ namespace feed_handler
             if constexpr (PT == packet_type::book_update)
             {
                 if (bookDelegate != nullptr)
-                {
                     bookDelegate->on_book_updated(std::enable_shared_from_this<book<T>>::shared_from_this());
-                }
             }
-
-            if constexpr (PT == packet_type::event)
+            else if constexpr (PT == packet_type::event)
             {
                 if (eventDelegate != nullptr)
-                {
                     eventDelegate->on_event_received();
-                }
             }
         }
     };
