@@ -1,6 +1,8 @@
 #include "algorithms.hpp"
 
 #include <benchmark/benchmark.h>
+#include <thread>
+#include <memory>
 
 static void algo_bm(benchmark::State &state)
 {
@@ -15,13 +17,22 @@ static void algo_bm(benchmark::State &state)
     book1->bookDelegate = algo;
     book1->eventDelegate = algo;
 
-    feed_handler::packet<feed_handler::packet_type::book_update> pkt1;
+    auto work = std::make_shared<boost::asio::io_context::work>(io);
 
-    for (auto _ : state)
-    {
-        book1->process_packet(pkt1);
-    }
+    std::thread th(
+        [&]()
+        {
+            feed_handler::packet<feed_handler::packet_type::book_update> pkt1;
+            for (auto _ : state)
+            {
+                book1->process_packet(pkt1);
+            }
+            work.reset();
+        });
+
     io.run();
+
+    th.join();
 
     algo->print_stats();
 }
