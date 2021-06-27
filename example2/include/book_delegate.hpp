@@ -39,9 +39,8 @@ namespace feed_handler
 
             void on_book_updated(book<T>::pointer book)
             {
-                static_cast<T *>(this)->on_book_updated(book);
-                // post(_io, [=]()
-                //      { static_cast<T *>(this)->on_book_updated(book); });
+                post(_io, [=]()
+                     { static_cast<T *>(this)->on_book_updated(book); });
             }
         };
 
@@ -57,9 +56,8 @@ namespace feed_handler
 
             void on_event_received(void)
             {
-                static_cast<T *>(this)->on_event_received();
-                // post(_io, [=]()
-                //      { static_cast<T *>(this)->on_event_received(); });
+                post(_io, [=]()
+                     { static_cast<T *>(this)->on_event_received(); });
             }
         };
 

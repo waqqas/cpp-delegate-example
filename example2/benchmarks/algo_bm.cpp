@@ -16,14 +16,12 @@ static void algo_bm(benchmark::State &state)
     book1->eventDelegate = algo;
 
     feed_handler::packet<feed_handler::packet_type::book_update> pkt1;
-    feed_handler::packet<feed_handler::packet_type::event> pkt2;
 
     for (auto _ : state)
     {
         book1->process_packet(pkt1);
-        book1->process_packet(pkt2);
-        // io.run();
     }
+    io.run();
 
     algo->print_stats();
 }
