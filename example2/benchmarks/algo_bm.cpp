@@ -22,7 +22,7 @@ static void algo1_bm(benchmark::State &state)
     std::thread th(
         [&]()
         {
-            feed_handler::packet<feed_handler::packet_type::book_update> pkt1;
+            feed_handler::packet<feed_handler::packet_type::event> pkt1;
             for (auto _ : state)
             {
                 book1->process_packet(pkt1);
@@ -50,7 +50,7 @@ static void algo2_bm(benchmark::State &state)
     std::thread th(
         [&]()
         {
-            feed_handler::packet2 pkt1{feed_handler::packet_type::book_update};
+            feed_handler::packet2 pkt1{feed_handler::packet_type::event};
             for (auto _ : state)
             {
                 book->process_packet(pkt1);
