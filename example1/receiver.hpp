@@ -5,7 +5,7 @@
 
 namespace user_defined
 {
-    class recevier : public delegator::ireceiver
+    class receiver : public delegator::ireceiver
     {
         void do_actual_work(const delegator::sender &sender) override
         {
