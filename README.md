@@ -6,7 +6,7 @@ This repo has two examples of delegation pattern using C++. One is a basic examp
 Delegation Pattern
 ---
 
-A delegation pattern is a way to extend the functionality of a class without using inheritance. Instead, it uses composition, instead. 
+A delegation pattern is a way to extend the functionality of a class without using inheritance. Instead, it uses composition. 
 
 There are two classes that are loosely connected to each other. One is called the "sender" and other is called the "receiver". The sender delegates some of the responsibilities of the work to be performed to the receiver. Thus, the receiver extends the functionality of the sender. The "sender" and "receiver" are named from the point of view of the who "sends" a request to whom. A "request" is a piece of work that needs to be done and is typically implemented as a function.
 
