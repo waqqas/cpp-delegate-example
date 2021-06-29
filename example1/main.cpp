@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "sender.hpp"
-#include "receveir.hpp"
+#include "receiver.hpp"
 
 #include <string>
 
